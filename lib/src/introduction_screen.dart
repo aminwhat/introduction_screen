@@ -277,66 +277,66 @@ class IntroductionScreen extends StatefulWidget {
   /// ```
   final CanProgress canProgress;
 
-  IntroductionScreen(
-      {Key? key,
-      this.pages,
-      this.rawPages,
-      this.onDone,
-      this.onSkip,
-      this.onChange,
-      this.done,
-      this.overrideDone,
-      this.skip,
-      this.overrideSkip,
-      this.next,
-      this.overrideNext,
-      this.back,
-      this.overrideBack,
-      this.showSkipButton = false,
-      this.showNextButton = true,
-      this.showDoneButton = true,
-      this.showBottomPart = true,
-      this.showBackButton = false,
-      this.customProgress,
-      this.isProgress = true,
-      this.hideBottomOnKeyboard = false,
-      this.isProgressTap = true,
-      this.freeze = false,
-      this.globalBackgroundColor,
-      this.dotsDecorator = const DotsDecorator(),
-      this.dotsContainerDecorator,
-      this.animationDuration = 350,
-      this.autoScrollDuration,
-      this.infiniteAutoScroll = false,
-      this.initialPage = 0,
-      this.skipOrBackFlex = 1,
-      this.dotsFlex = 1,
-      this.nextFlex = 1,
-      this.curve = Curves.easeIn,
-      this.baseBtnStyle,
-      this.skipStyle,
-      this.nextStyle,
-      this.doneStyle,
-      this.backStyle,
-      this.skipSemantic,
-      this.nextSemantic,
-      this.doneSemantic,
-      this.backSemantic,
-      this.resizeToAvoidBottomInset = true,
-      this.controlsPosition = const Position(left: 0, right: 0, bottom: 0),
-      this.controlsMargin = EdgeInsets.zero,
-      this.controlsPadding = const EdgeInsets.all(16.0),
-      this.bodyPadding = EdgeInsets.zero,
-      this.globalHeader,
-      this.globalFooter,
-      this.scrollControllers,
-      this.pagesAxis = Axis.horizontal,
-      this.scrollPhysics = const BouncingScrollPhysics(),
-      this.rtl = false,
-      this.allowImplicitScrolling = false,
-      this.canProgress = kDefaultCanProgressFunction,
-      this.safeAreaList = const [false, false, false, false]})
-      : assert(
+  IntroductionScreen({
+    Key? key,
+    this.pages,
+    this.rawPages,
+    this.onDone,
+    this.onSkip,
+    this.onChange,
+    this.done,
+    this.overrideDone,
+    this.skip,
+    this.overrideSkip,
+    this.next,
+    this.overrideNext,
+    this.back,
+    this.overrideBack,
+    this.showSkipButton = false,
+    this.showNextButton = true,
+    this.showDoneButton = true,
+    this.showBottomPart = true,
+    this.showBackButton = false,
+    this.customProgress,
+    this.isProgress = true,
+    this.hideBottomOnKeyboard = false,
+    this.isProgressTap = true,
+    this.freeze = false,
+    this.globalBackgroundColor,
+    this.dotsDecorator = const DotsDecorator(),
+    this.dotsContainerDecorator,
+    this.animationDuration = 350,
+    this.autoScrollDuration,
+    this.infiniteAutoScroll = false,
+    this.initialPage = 0,
+    this.skipOrBackFlex = 1,
+    this.dotsFlex = 1,
+    this.nextFlex = 1,
+    this.curve = Curves.easeIn,
+    this.baseBtnStyle,
+    this.skipStyle,
+    this.nextStyle,
+    this.doneStyle,
+    this.backStyle,
+    this.skipSemantic,
+    this.nextSemantic,
+    this.doneSemantic,
+    this.backSemantic,
+    this.resizeToAvoidBottomInset = true,
+    this.controlsPosition = const Position(left: 0, right: 0, bottom: 0),
+    this.controlsMargin = EdgeInsets.zero,
+    this.controlsPadding = const EdgeInsets.all(16.0),
+    this.bodyPadding = EdgeInsets.zero,
+    this.globalHeader,
+    this.globalFooter,
+    this.scrollControllers,
+    this.pagesAxis = Axis.horizontal,
+    this.scrollPhysics = const BouncingScrollPhysics(),
+    this.rtl = false,
+    this.allowImplicitScrolling = false,
+    this.canProgress = kDefaultCanProgressFunction,
+    this.safeAreaList = const [false, false, false, false],
+  })  : assert(
           pages != null || rawPages != null,
           "You must set either 'pages' or 'rawPages' parameter",
         ),
@@ -449,25 +449,35 @@ class IntroductionScreenState extends State<IntroductionScreen> {
       final int pagesLength = getPagesLength() - 1;
       if (widget.infiniteAutoScroll) {
         while (true) {
-          if (!mounted) {
+          if (mounted) {
+            try {
+              await _movePage(
+                _autoscrollDuration,
+                _animationDuration,
+                getCurrentPage() < pagesLength,
+              );
+            } catch (e) {
+              break;
+            }
+          } else {
             break;
           }
-          await _movePage(
-            _autoscrollDuration,
-            _animationDuration,
-            getCurrentPage() < pagesLength,
-          );
         }
       } else {
         while (getCurrentPage() < pagesLength) {
-          if (!mounted) {
+          if (mounted) {
+            try {
+              await _movePage(
+                _autoscrollDuration,
+                _animationDuration,
+                true,
+              );
+            } catch (e) {
+              break;
+            }
+          } else {
             break;
           }
-          await _movePage(
-            _autoscrollDuration,
-            _animationDuration,
-            true,
-          );
         }
       }
     }
